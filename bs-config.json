@@ -1,5 +1,5 @@
 {
-  "port": 8000,
+  "port": 80,
   "files": ["./transpiled/**/*", "./styles/**/*", "./**/*.html"],
   "server": { "baseDir": "." }
 }
