@@ -30,5 +30,5 @@ require("../prefs/index");
 require("font-awesome/css/font-awesome.css!");
 require("bootstrap/css/bootstrap.css!");
 // Google analytics
-require('../util/ga');
+//import '../util/ga';
 //# sourceMappingURL=bootstrap.js.map

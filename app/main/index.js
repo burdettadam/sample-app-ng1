@@ -4,12 +4,13 @@ import {app} from "./app.component";
 import {welcome} from "./welcome.component";
 import {login} from "./login.component";
 import {home} from "./home.component";
-import {appState, homeState, loginState, welcomeState} from "./app.states";
+import {oauth} from "./oauth.component";
+import {appState, homeState, loginState, welcomeState, codestate} from "./app.states";
 import {otherwiseConfigBlock, traceRunBlock} from "./app.config";
 
 const mainAppModule = {
-  components: {app, welcome, login, home},
-  states: [appState, homeState, loginState, welcomeState],
+  components: {app, welcome, login, home, oauth},
+  states: [appState, homeState, loginState, welcomeState, codestate],
   configBlocks: [otherwiseConfigBlock],
   runBlocks: [traceRunBlock]
 };

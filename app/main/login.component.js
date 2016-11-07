@@ -5,8 +5,25 @@
  * Then it sends the user back to the `returnTo` state, which is provided as a resolve data.
  */
 class LoginController {
-  constructor(AppConfig, AuthService, $state) {
-    this.usernames = AuthService.usernames;
+  constructor(AppConfig, AuthService, $state,$scope) { // called at creation
+    // set up app defaults 
+    this.AppConfig = AppConfig;
+    this.clientKey = AppConfig.clientKey;
+    this.anonECI = AppConfig.anonECI;
+    this.callbackURL = AppConfig.callbackURL;
+    this.host = AppConfig.host; 
+    this.login_server = AppConfig.login_server; 
+    this.eventPath = AppConfig.eventPath;
+    this.functionPath = AppConfig.functionPath;
+
+    this.defaultECI = AppConfig.defaultECI;// "none"
+    this.access_token = AppConfig.access_token; // "none"
+
+    // retrieveSession(); // I dont think we need this here.
+    
+    this.plant_authorize_button($scope,AuthService,AppConfig); // plant buttons 
+
+    //this.usernames = AuthService.usernames;
 
     this.credentials = {
       username: AppConfig.emailAddress,
@@ -30,8 +47,61 @@ class LoginController {
           .then(returnToOriginalState)
           .catch(showError)
           .finally(() => this.authenticating = false);
-    }
+    };
+
   }
+    
+  getURL = function(type,fragment){
+      if (typeof this.login_server === "undefined") {
+          this.login_server = this.host;
+      }
+
+
+      var client_state = Math.floor(Math.random() * 9999999);
+      //var current_client_state = window.localStorage.getItem("wrangler_CLIENT_STATE");
+      //if (this.AppConfig.client_state === undefined) { // we allways want to update state before oauth right???
+        this.AppConfig.client_state = client_state;
+        this.AppConfig.save();
+          //window.localStorage.setItem("manifold_CLIENT_STATE", client_state.toString());
+     // }
+      var url = 'https://' + this.login_server +
+      '/oauth/authorize'+type+'?response_type=code' +
+      '&redirect_uri=' + encodeURIComponent(this.callbackURL + (fragment || "")) +
+      '&client_id=' + this.clientKey +
+      '&state=' + this.AppConfig.client_state;
+
+      return (url)
+    };
+
+  getOAuthURL = function(fragment)
+  {
+    return ( this.getURL('',fragment) );
+  };
+
+  getOAuthNewAccountURL = function(fragment)
+  {
+    return ( this.getURL('/newuser',fragment) );
+  };
+
+  plant_authorize_button = function( $scope ,AuthService,AppConfig )
+        {
+            //Oauth through kynetx
+            console.log("plant authorize button");
+            var OAuth_kynetx_URL = this.getOAuthURL();
+            $scope.authorize_link = OAuth_kynetx_URL;
+            var OAuth_kynetx_newuser_URL = this.getOAuthNewAccountURL();
+            $scope.create_link = OAuth_kynetx_newuser_URL;
+            $scope.account_link = "https://" + AppConfig.login_server + "/login/profile";
+            
+         /*   $('#logout-link').off('tap').on('tap', function(event) {
+                window.open("https://" + AppConfig.login_server + "/login/logout?" + Math.floor(Math.random() * 9999999), "_blank");
+             //   AuthService.removeSession(true); // true for hard reset (log out of login server too) //////////////////////////////////??????????????????????????????????????
+                $state.go('login', {}, { reload: true, transition : 'slide' }); //$.mobile.changePage('#page-authorize', {
+                //    transition: 'slide'
+                //}); // this will go to the authorization page.
+            });*/
+        };
+
 }
 
 /**
@@ -49,7 +119,7 @@ export const login = {
     <div class="container">
       <div class="col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
         <h3>Log In</h3>
-        <p>(This login screen is for demonstration only... just pick a username, enter 'password' and click <b>"Log in"</b>)</p>
+        <p></p>
         <hr>
     
         <div>
@@ -69,6 +139,11 @@ export const login = {
             Enter '<b>password</b>' here
           </i>
         </div>
+        <a id="authorize-link" ng-href="{{authorize_link}}" data-transition="slide" class="ui-btn ui-corner-all ui-btn-b ui-shadow ui-btn-inline">Authorize with Kynetx</a><br>
+
+        <a id="create-link" ng-href="{{create_link}}" data-transition="slide" class="ui-btn ui-corner-all ui-btn-a ui-shadow ui-btn-inline">Create Kynetx Account</a><br>
+  
+        <a id="account-link" ng-href="{{account_link}}" data-transition="slide" class="ui-btn ui-corner-all ui-btn-a ui-shadow ui-btn-inline">My Kynetx Profile</a>
     
         <div ng-show="$ctrl.errorMessage" class="well error">{{ $ctrl.errorMessage }}</div>
     

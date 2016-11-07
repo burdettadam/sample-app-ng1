@@ -33,4 +33,4 @@ import "font-awesome/css/font-awesome.css!"
 import "bootstrap/css/bootstrap.css!"
 
 // Google analytics
-import '../util/ga';
+//import '../util/ga';

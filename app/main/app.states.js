@@ -2,6 +2,7 @@ import {appTemplate, appController} from "./app.component";
 import {welcomeTemplate, welcomeController} from "./welcome.component";
 import {homeTemplate} from "./home.component";
 import {loginTemplate, loginController} from "./login.component";
+import {oauthTemplate, oauthController} from "./oauth.component"; // what does this do and how???????
 
 /**
  * This is the parent state for the entire application.
@@ -63,6 +64,16 @@ export const loginState = {
  * they were redirected from.  Otherwise, if they transitioned directly, return the fromState/params.  Otherwise
  * return the main "home" state.
  */
+export const codestate = {
+  parent: 'app',
+  name: 'oauth',
+  url: '/oauth',
+  component: 'oauth'//,
+  //resolve: { returnTo: returnTo }
+};
+
+
+
 function returnTo ($transition$) {
   if ($transition$.redirectedFrom() != null) {
     // The user was redirected to the login state (e.g., via the requiresAuth hook when trying to activate contacts)

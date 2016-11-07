@@ -8,6 +8,7 @@ class AuthedController {
 
     this.emailAddress = AppConfig.emailAddress;
     this.isAuthenticated = AuthService.isAuthenticated();
+
   }
 
   logout() {
@@ -16,6 +17,8 @@ class AuthedController {
     // Reload states after authentication change
     return $state.go('welcome', {}, { reload: true });
   }
+
+
 }
 
 /**
