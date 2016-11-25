@@ -120,33 +120,38 @@ export class AuthService {
             callback = function() { };
         }
         var url = 'https://' + this.AppConfig.login_server + '/oauth/access_token';
-        var data = {
+        var datas = JSON.stringify(
+          {
             "grant_type": "authorization_code",
             "redirect_uri": this.AppConfig.callbackURL,
             "client_id": this.AppConfig.clientKey,
             "code": code
-        };
-        var config = {
-
-        };
-        return $http.post(url, data, 'Access-Control-Allow-Origin')
+          });
+        console.log("data to send",datas);
+        //return $http.post({
+        return $http({
+                  method: 'POST' ,
+                  url: url ,
+                  data: datas ,
+                  responseType:'json'
+                })//url, data ,{ responseType:'json'})
            .then(
-               function(json){
+               function(response){
                   console.log("Recieved following authorization object from access token request: ", json);
-                  if (!json.OAUTH_ECI) {
+                  if (!response.OAUTH_ECI) {
                     console.error("Received invalid OAUTH_ECI. Not saving session.");
-                    callback(json);
+                    callback(response);
                     return;
                   };
                   //wrangler.saveSession(json);
-                  this.manifoldSaveSession(json);
+                  this.manifoldSaveSession(response);
               //    window.localStorage.removeItem("manifold_CLIENT_STATE");// moved into saveSession
-                  callback(json);
+                  callback(response);
                }, // success callback
-               function(json){
-                  console.log("Failed to retrieve access token " + json);
+               function(response){
+                  console.log("Failed to retrieve access token " ); console.log(response);
                   error_func = error_func || function(){};
-                  error_func(json);
+                  error_func(response);
                }// failure callback
             );
        /* return $.ajax({

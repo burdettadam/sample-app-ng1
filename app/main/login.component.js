@@ -60,8 +60,12 @@ class LoginController {
       var client_state = Math.floor(Math.random() * 9999999);
       //var current_client_state = window.localStorage.getItem("wrangler_CLIENT_STATE");
       //if (this.AppConfig.client_state === undefined) { // we allways want to update state before oauth right???
+        console.log("client_state before",this.AppConfig.client_state);
         this.AppConfig.client_state = client_state;
+        console.log("client_state",client_state);
+        console.log("client_state after",this.AppConfig.client_state);
         this.AppConfig.save();
+        console.log("client_state after save",this.AppConfig.client_state);
           //window.localStorage.setItem("manifold_CLIENT_STATE", client_state.toString());
      // }
       var url = 'https://' + this.login_server +
@@ -69,6 +73,7 @@ class LoginController {
       '&redirect_uri=' + encodeURIComponent(this.callbackURL + (fragment || "")) +
       '&client_id=' + this.clientKey +
       '&state=' + this.AppConfig.client_state;
+        console.log("client_state",this.AppConfig.client_state);
 
       return (url)
     };
@@ -92,7 +97,7 @@ class LoginController {
             var OAuth_kynetx_newuser_URL = this.getOAuthNewAccountURL();
             $scope.create_link = OAuth_kynetx_newuser_URL;
             $scope.account_link = "https://" + AppConfig.login_server + "/login/profile";
-            
+
          /*   $('#logout-link').off('tap').on('tap', function(event) {
                 window.open("https://" + AppConfig.login_server + "/login/logout?" + Math.floor(Math.random() * 9999999), "_blank");
              //   AuthService.removeSession(true); // true for hard reset (log out of login server too) //////////////////////////////////??????????????????????????????????????
