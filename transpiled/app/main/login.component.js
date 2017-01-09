@@ -15,12 +15,8 @@ var LoginController = (function () {
             var client_state = Math.floor(Math.random() * 9999999);
             //var current_client_state = window.localStorage.getItem("wrangler_CLIENT_STATE");
             //if (this.AppConfig.client_state === undefined) { // we allways want to update state before oauth right???
-            console.log("client_state before", this.AppConfig.client_state);
             this.AppConfig.client_state = client_state;
-            console.log("client_state", client_state);
-            console.log("client_state after", this.AppConfig.client_state);
             this.AppConfig.save();
-            console.log("client_state after save", this.AppConfig.client_state);
             //window.localStorage.setItem("manifold_CLIENT_STATE", client_state.toString());
             // }
             var url = 'https://' + this.login_server +
@@ -28,7 +24,6 @@ var LoginController = (function () {
                 '&redirect_uri=' + encodeURIComponent(this.callbackURL + (fragment || "")) +
                 '&client_id=' + this.clientKey +
                 '&state=' + this.AppConfig.client_state;
-            console.log("client_state", this.AppConfig.client_state);
             return (url);
         };
         this.getOAuthURL = function (fragment) {
